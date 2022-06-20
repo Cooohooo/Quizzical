@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import Mainpage from "./components/mainPage/Mainpage.js";
+import Questionpage from "./components/questionPage/Questionpage";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    
+    const [startquiz, setStartQuiz] = useState(false);
+    const [quizes, setQuizes] = useState(null);
+
+    const handleStartGame = () => {
+        setStartQuiz((prev) => !prev);
+        fetch("https://opentdb.com/api.php?amount=5&category=9&difficulty=medium")
+            .then((res) => res.json())
+            .then((data) => {
+                setQuizes(data.results);
+            });
+    };
+    
+    return (
+        <div className="startpage">
+            <div className="startpage__imgright"></div>
+            <div className="startpage__imgleft"></div>
+            {startquiz ? <Questionpage quizes={quizes} /> : <Mainpage handleStartGame={handleStartGame} />}
+        </div>
+    );
 }
 
 export default App;
